@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: chandan3461/backend:v1
+        ports:
+        - containerPort: 8080
+        env:
+        - name: DB_HOST
+          value: "postgres-service"
+        - name: DB_USER
+          value: "your_db_user"
+        - name: DB_PASSWORD
+          value: "your_db_password"
+        - name: DB_NAME
+          value: "your_db_name"
+        - name: DB_PORT
+          value: "5432"
+        - name: ALLOWED_ORIGINS
+          value: "*"  # or your frontend URL
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+spec:
+  selector:
+    app: backend
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP
